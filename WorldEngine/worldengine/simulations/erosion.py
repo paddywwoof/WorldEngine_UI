@@ -73,7 +73,7 @@ class ErosionSimulation(object):
 
         # step five: rivers with no paths to sea form lakes
         for lake in lake_list:
-            # print "Found lake at:",lake
+            # print( "Found lake at:",lake)
             lx, ly = lake
             lake_map[ly, lx] = 0.1  # TODO: make this based on rainfall/flow
 
@@ -335,7 +335,7 @@ class ErosionSimulation(object):
                                                                  world.height)
 
                     # if utilities.outOfBounds([x+cx, y+cy], self.size):
-                    #                        print "Fixed:",x ,y,  rx, ry
+                    #                        print( "Fixed:",x ,y,  rx, ry)
 
                     elevation = world.layers['elevation'].data[ry, rx]
                     # have we found a lower elevation?
@@ -350,7 +350,7 @@ class ErosionSimulation(object):
 
         if destination in wrapped:
             isWrapped = True
-        # print "Wrapped lower elevation found:", rx, ry, "!"
+        # print( "Wrapped lower elevation found:", rx, ry, "!")
         return isWrapped, destination
 
     def river_erosion(self, river, world):

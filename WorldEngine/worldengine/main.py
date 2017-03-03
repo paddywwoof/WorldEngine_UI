@@ -1,7 +1,7 @@
 import time
 from shutil import copy
 
-import configparser2
+import configparser as configparser2
 import numpy
 
 import common
@@ -21,6 +21,8 @@ from PyQt4.QtCore import pyqtSlot
 from step import Step
 # from code3D import pi_3d
 from world3d import world3dA
+import sys
+import os
 
 try:
     from hdf5_serialization import save_world_to_hdf5
@@ -34,7 +36,7 @@ VERSION = __version__
 from PyQt4 import QtGui
 from PyQt4 import QtCore
 from PyQt4 import uic
-from OpenGL.GLUT import *
+#from OpenGL.GLUT import *
 
 from height2bump import readHeight2Bump
 
@@ -162,7 +164,9 @@ class MyApp(FORM_1, BASE_1):
         self.sWorld = ''
         self.world = None
         self.sOutputDirectory, _ = os.path.split(sys.argv[0])
-        self.sDefaultDirectory, _ = os.path.split(sys.argv[0])
+        if self.sOutputDirectory == '':
+          self.sOutputDirectory = '.'
+        self.sDefaultDirectory = self.sOutputDirectory
         self.sSeed = ''
         self.iSeed = 11111
         self.iDrag = 0
@@ -919,11 +923,15 @@ class MyApp(FORM_1, BASE_1):
             self.clearLists()
 
             sTmp = os.path.basename(str(self.sWorld)).split('.')
-            self.sSeed = QtCore.QString(sTmp[0])
-            self.sSeed = self.sSeed.right(5)
+            try:
+              self.sSeed = QtCore.QString(sTmp[0])
+            except:
+              self.sSeed = sTmp[0] # using python3
+
+            self.sSeed = self.sSeed[-5:] # assume [] system works in python2 as used below to test _
 
             if self.sSeed[:1] == "_":
-                self.sSeed = self.sSeed.right(4)
+                self.sSeed = self.sSeed[-4:]
 
             self.iSeed = long(self.sSeed)
 
@@ -1261,7 +1269,7 @@ class MyApp(FORM_1, BASE_1):
                 for y in range(int(iHeight)):
                     c = tImage.pixel(x, y)
                     colors = QtGui.QColor(c).getRgbF()
-                    #                    print '(%s,%s) = %s' % (x, y, colors)
+                    #                    print( '(%s,%s) = %s' % (x, y, colors))
                     yourFile.write('%s,%s,%s,%s,%s,%s,' % (x, y, colors[0], colors[1], colors[2], colors[3]))
 
         tImage = QtGui.QPixmap()
